@@ -32,6 +32,7 @@ export default {
   methods: {
     select(index) {
       this.dateQuery.type = index
+      var date = new Date();
       switch (index) {
         case 0:
           this.dateQuery.start_time = date.format("yyyy-MM-dd")
@@ -76,5 +77,4 @@ export default {
 .m_info {
   margin-right: 6px;
 }
-
 </style>

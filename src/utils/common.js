@@ -8,6 +8,31 @@ const appData = {
     {name:"mail",rule:/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,msg:'邮箱地址不正确'},
   ],
 }
+/**
+ * 表单验证
+ * @param  {[type]} form [description]
+ * @return {[type]}      [description]
+ */
+const formSubmit = function(form){
+  let res = { code:0, msg:"success"}
+  let rules = appData.formRules
+  for ( var variable in form) {
+    for (var i = 0; i < rules.length; i++) {
+      if(rules[i].name == variable ){ 
+        if(!rules[i].rule.test(form[''+variable])){
+          res.code = 1 
+          res.msg = rules[i].msg
+          return res
+        }
+      }
+    }
+  }
+  return res
+}
+/**
+ * 数组去重
+ * @return {[type]} [description]
+ */
 const identicalArr = function () { 
   let result = []
   let str = ''
@@ -18,7 +43,7 @@ const identicalArr = function () {
       if(attribute==''){
         if (arguments[0][i] === arguments[1][j]) {
           result.push(arguments[0][i])
-          str += arguments[0][i]+ ','
+          str += arguments[0][i]+ ',' 
         }
       }else{
         if (arguments[0][i]['' + attribute] === arguments[1][j]['' + attribute]) {
@@ -41,9 +66,13 @@ const setRem = function (size) {
   calSize(size)
   window.addEventListener('resize', calSize)
 }
-const uninstallRem = function(){
-  var demo =  document.getElementsByTagName('html')[0].style.fontSize = ""
-}
+/**
+ * 四舍五如浮点
+ * @param  {[type]} num   [description]
+ * @param  {[type]} float [description]
+ * @param  {[type]} bolen [description]
+ * @return {[type]}       [description]
+ */
 const roundToFixed = function(num, float, bolen) {
   let text = 1
   for (let i = 0; i < float; i++) {
@@ -55,13 +84,20 @@ const roundToFixed = function(num, float, bolen) {
   }
   return Number(Number(Math.round(num * text) / text).toFixed(float))
 }
-
+/**
+ * 获取当前时间的多种格式表达
+ * @param  {[type]} some        [description]
+ * @param  {[type]} sun         [description]
+ * @param  {[type]} Hexadecimal [description]
+ * @param  {[type]} split       [description]
+ * @return {[type]}             [description]
+ */
 const getNowDate = function(some,sun,Hexadecimal,split){
   let sundate = ["星期天","星期一","星期二", "星期三","星期四","星期五", "星期六"]
   let splitArr = ["年","月","日"]
   let temp = ["凌晨","早上","下午","晚上"]
   var date =''
-  let myDate = new Date();//获取系统当前时间
+  let myDate = new Date();
   let hours = myDate.getHours()
   let minues = myDate.getMinutes()
   let seconds = myDate.getSeconds()
@@ -90,6 +126,13 @@ const getNowDate = function(some,sun,Hexadecimal,split){
   if(sun){date+=" "+sundate[myDate.getDay()]}
   return date
 }
+/**
+ * 倒计时
+ * @param  {[type]} that [description]
+ * @param  {[type]} num  [description]
+ * @param  {[type]} end  [description]
+ * @return {[type]}      [description]
+ */
 const toTime = function(that,num,end) {
   var checkCode ={}
   var num = num  
@@ -138,22 +181,11 @@ Date.prototype.format = function (format) {
    }
    return format;
 };
-const formSubmit = function(form){
-  let res = { code:0, msg:"success"}
-  let rules = appData.formRules
-  for ( var variable in form) {
-    for (var i = 0; i < rules.length; i++) {
-      if(rules[i].name == variable ){
-        if(!rules[i].rule.test(form[''+variable])){
-          res.code = 1 
-          res.msg = rules[i].msg
-          return res
-        }
-      }
-    }
-  }
-  return res
-}
+/**
+ * element ui 图片转化方法 
+ * @param  {[type]} string [description]
+ * @return {[type]}        [description]
+ */
 const stringToresObjs = function(string){
   let arr = []
   let arrs = string.split(',')
@@ -167,19 +199,6 @@ const stringToresObjs = function(string){
   }
   return arr
 }
-
-const objToArr = function (){
-    var newList = []
-    for ( var variable in test) {
-        var row = {
-          title:variable,
-          list:test[""+variable]
-        }
-        newList.push(row)
-    }             
-    return newList    
-}
-
 const resObjTostring = function(arr){
   let arrString=''
   for (var i = 0; i < arr.length; i++) {
@@ -191,7 +210,11 @@ const resObjTostring = function(arr){
   }
   return arrString
 }
-
+/**
+ * [去除对象基本空值]
+ * @param  {[type]} obj [description]
+ * @return {[type]}     [description]
+ */
 const deleteRA = function(obj) {
   for (const variable in obj) {
     if (obj['' + variable] === '' ||  obj[''+variable] === undefined || obj[''+variable] === null  ) {
@@ -200,6 +223,11 @@ const deleteRA = function(obj) {
   }
   return obj
 }
+/**
+ * [转化参数信息未formdata格式]
+ * @param  {[type]} obj [description]
+ * @return {[type]}     [description]
+ */
 const formatData = function(obj){
   const params = new URLSearchParams()
   for (const variable in obj) {

@@ -1,20 +1,20 @@
 <template>
   <div>
     <themPlane title="基本信息" ref="themPlane">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="baseInfoForm" :rules="rules" ref="baseInfoForm" label-width="100px">
         <el-form-item label="商品名称" prop="name">
-          <el-input class="width300" v-model="ruleForm.name"></el-input>
+          <el-input class="width300" v-model="baseInfoForm.name"></el-input>
         </el-form-item>
         <el-form-item label="副标题" prop="name">
-          <el-input class="width300" v-model="ruleForm.name"></el-input>
+          <el-input class="width300" v-model="baseInfoForm.name"></el-input>
         </el-form-item>
         <el-form-item label="商品分类" prop="name">
-          <el-cascader v-model="ruleForm.value" :options="options">
+          <el-cascader v-model="baseInfoForm.value" :options="shopTypes">
           </el-cascader>
           <el-button type="primary" plain>分类管理</el-button>
         </el-form-item>
         <el-form-item class="no_margin" label="产品编号" prop="name">
-          <el-input class="width300" v-model="ruleForm.name"></el-input>
+          <el-input class="width300" v-model="baseInfoForm.name"></el-input>
           <p class="m_info">如果您不输入商品货号，系统将自动生成一个唯一的货号。</p>
         </el-form-item>
       </el-form>
@@ -24,11 +24,17 @@
         <div class="imgRow">
           <img src="@/assets/images/redClose.png" class="icon_close" alt="">
           <img class="_img" src="@/assets/images/product.png">
-          <span class="row_text a_active">商品主图
-            <!-- 设为主图 --></span>
+          <span class="row_text a_active">商品主图<!-- 设为主图 --></span>
         </div>
       </div>
-      <el-upload :show-file-list="false" action="https://jsonplaceholder.typicode.com/posts/" multiple>
+      <el-upload 
+        :show-file-list="false" 
+        action="https://jsonplaceholder.typicode.com/posts/" 
+        multiple
+        :limit="3"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+        >
         <el-button class="margin_t margin_b" type="primary">图片上传</el-button>
       </el-upload>
       <p class="m_info">按住ctrl可同时批量选择多张图片上传，最多可以上传5张图片，建议尺寸800*800px</p>
@@ -55,7 +61,7 @@
         <h6 class="_absolute">规格明细</h6>
         <!-- 明细组件 -->
         <template>
-          <el-table :data="tableData" border style="width: 100%">
+          <el-table :data="spaceData" border style="width: 100%">
             <el-table-column prop="date" label="尺码">
             </el-table-column>
             <el-table-column prop="date" label="颜色">
@@ -82,34 +88,34 @@
             </el-table-column>
             <el-table-column align="center" prop="address" label="操作">
               <template slot-scope="scope">
-                <el-button type="text">操作</el-button>
+                <el-button type="text">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </template>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm margin_t">
+        <el-form :model="spcesForm" :rules="rules" ref="spcesForm" label-width="120px" class=" margin_t">
           <el-form-item label="商品售价" prop="name">
-            <el-input class="width300" v-model="ruleForm.name"></el-input>
+            <el-input class="width300" v-model="spcesForm.name"></el-input>
           </el-form-item>
           <el-form-item label="划线价" prop="name">
-            <el-input class="width300" v-model="ruleForm.name"></el-input>
+            <el-input class="width300" v-model="spcesForm.name"></el-input>
           </el-form-item>
           <el-form-item label="库存减扣方式" prop="name">
             <div class="no_margin">
-              <el-radio>拍下减库存</el-radio>
+              <el-radio v-model="spcesForm.radio" label="1">拍下减库存</el-radio>
               <p class="m_info " style="line-height:18px;">买家提交订单，扣减库存数量，可能存在恶意占用库存风险</p>
             </div>
             <div class="no_margin">
-              <el-radio>付款减库存</el-radio>
+              <el-radio v-model="spcesForm.radio" label="2">付款减库存</el-radio>
               <p class="m_info " style="line-height:18px;">买家支付成功，扣减库存数量，可能存在超卖风险</p>
             </div>
           </el-form-item>
           <el-form-item label="库存" prop="name">
-            <el-input class="width300" v-model="ruleForm.name"></el-input>
-            <el-radio>商品详情不显示剩余库存</el-radio>
+            <el-input class="width300" v-model="spcesForm.name"></el-input>
+            <el-checkbox class="margin_l" v-model="spcesForm.bolen" >商品详情不显示剩余库存</el-checkbox>
           </el-form-item>
           <el-form-item label="库存预警" prop="name">
-            <el-input class="width300" v-model="ruleForm.name"></el-input>
+            <el-input class="width300" v-model="spcesForm.name"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -127,11 +133,39 @@
     },
 		data(){
 			return {
-        tableData:[1],
-        active:1,
-        ruleForm:{},
-        rules:{},
-        options: [{
+        // query
+        baseInfoForm:{//基本信息表单
+          name:"",
+          title:"",
+          type:"",
+          productCode:"",
+        },
+        shopImgList:[],//商品图列表
+        shopVideo:[],//商品主图
+        spces:[],    // 商品规格生成
+        spcesDetail:[],//规格明细
+        spcesForm:{
+          bolen:false
+        },//规格明细表单
+        // data
+        spaceData:[1],  //商品多规格的列表
+        rules: {  //表单验证规则
+          name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          ],
+          title: [
+            { required: true, message: '请选择活动区域', trigger: 'change' }
+          ],
+          type: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+          ],
+          code: [
+            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+          ]
+        },
+        //分类列表 模拟数组
+        shopTypes: [{ 
           value: 'zhinan',
           label: '指南',
           children: [{
@@ -161,17 +195,20 @@
 
 		},
 		methods:{
-
+      handleAvatarSuccess(res,file){
+        console.log(res,file)
+      },
+      beforeAvatarUpload(res,file){
+        console.log(res,file)
+      },
+      showBolen(){
+        console.log(111)
+        this.spcesForm.bolen = !this.spcesForm.bolen
+      }
 		},
 	}
 </script>
 <style lang="scss" scoped>
-.plane_title{
-
-}
-
-
-
 /*商品相册*/
 .imgList{
   .imgRow{

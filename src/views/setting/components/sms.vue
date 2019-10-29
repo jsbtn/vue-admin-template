@@ -51,14 +51,19 @@
             <p class="sms_title">发送统计</p>
             <el-button>详细记录</el-button>
           </div>
+          <lineChart class="lineChart"></lineChart>
         </div>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
+import lineChart from '@/components/charts/lineChartSms'
 export default {
   name: "sms",
+  components:{
+    lineChart
+  },
   data() {
     return {
       value1:0,

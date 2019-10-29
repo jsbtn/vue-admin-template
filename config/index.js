@@ -10,8 +10,13 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
-
+    proxyTable: {
+      '/posts': {
+        target: 'https://jsonplaceholder.typicode.com',
+        changeOrigin:true,
+        secure: false
+      },    
+    },
     // Various Dev Server settings
     host: 'localhost', // localhost  0.0.0.0// can be overwritten by process.env.HOST
     port: 9527, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

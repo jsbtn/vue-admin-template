@@ -8,7 +8,7 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:9527
 npm run dev
 
 # build for production with minification
@@ -24,12 +24,12 @@ npm run build
   	- images
   - compoents 公共组件/常用业务组件（部分）
   - router vue路由
-  - vuex   状态管理 和 本次页面数据存储
+  - store  状态管理 和 本次页面数据存储
   - utils  公用部分js
-    - auth        cookie
+    - cookie      cookie
     - bus         观察者总线机制
     - directive   全局指令
-    - func        install 到全局的方法
+    - common      install 到全局的方法
     - index       模块公用方法
     - permissions 前端权限 
     - request     axios 封装
@@ -166,3 +166,7 @@ npm run build
   - 数据渲染最后做
 - 做能布局的地方
   - 短信平台完
+*2019-10-28 星期二*
+
+- 页面布局全部完成
+  - 部分难点功能除外

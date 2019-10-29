@@ -4,10 +4,10 @@ import { Message, MessageBox ,Loading } from 'element-ui'
 import router  from '@/router/index'
 import { getToken } from '@/utils/cookie'
 let loading
-
 const service = axios.create({
-  baseURL: process.env.ENV_CONFIG == "prod" ? window.location.origin+":12701" : process.env.BASE_API,
-  timeout: 15000
+  // baseURL: process.env.ENV_CONFIG == "prod" ? window.location.origin+":12701" : process.env.BASE_API,
+  baseURL: process.env.BASE_API,
+  timeout: 5000
 })
 
 service.interceptors.request.use(config => {
@@ -16,7 +16,7 @@ service.interceptors.request.use(config => {
       text: '加载中……',
       background: 'rgba(0, 0, 0, .2)'
   })
-  config.headers['Content-Type']= 'application/x-www-form-urlencoded'
+  config.headers['token'] = getToken();
   return config
 }, error => {
   Promise.reject(error)

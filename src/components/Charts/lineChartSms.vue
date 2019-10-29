@@ -28,7 +28,7 @@ export default {
     },
     chartData: {
       type: Object,
-      required: true
+      required: false
     }
   },
   data() {
@@ -58,27 +58,6 @@ export default {
   },
   methods: {
     initChart() {
-      let series = [
-          {
-              name:'邮件营销',
-              type:'line',
-              stack: '总量',
-              areaStyle: this.setAreaStyle(0),
-              data:[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230]
-          },
-          {
-              name:'联盟广告',
-              type:'line',
-              stack: '总量',
-              areaStyle: this.setAreaStyle(1),
-              data:[220, 182, 191, 234, 290, 330, 310, 101, 134, 90, 230]
-          }
-      ]
-      let legend = []
-      for (var i = 0; i < series.length; i++) {
-        legend.push(series[i].name)
-      }
-      this.chartData = this.chartData || {series,legend,type:"week"}
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
@@ -87,19 +66,6 @@ export default {
         color:this.color,
         textStyle:{
           color:"#333333"
-        },
-        xAxis: {
-          name:"日期",
-          nameLocation:"end",
-          nameTextStyle:{
-            fontSize:14,
-            color:"#999999",
-          },
-          data:this.getTimeArr(10), 
-          boundaryGap: false,
-          axisTick: {
-            show: false
-          }
         },
         grid: {
           left: 10,
@@ -126,19 +92,18 @@ export default {
           },
           padding: [5, 10]
         },
-        yAxis: {
-          axisTick: {
-            show: false
-          }
+        xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         },
-        // legend: {
-        //   orient:"horizontal",//horizontal /vertical
-        //   right:0,
-        //   top:10,
-        //   align:"left",
-        //   data:legend,
-        // },
-        series:series
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: 'line',
+            smooth:false,
+        }]
       })
     }
   }

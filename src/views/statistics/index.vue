@@ -5,7 +5,7 @@
     </div>
     <div class="fiexd_content">
       <el-row :gutter="20">
-        <el-col v-for="(item,index) in 8 "  :key="index" :xs="6" :sm="6" :md="6" :lg="3" :xl="3">
+        <el-col v-for="(item,index) in 8 " class="margin_b"   :key="index" :xs="6" :sm="6" :md="6" :lg="3" :xl="3">
           <div class="s_plane ">
             <div class="planeBox">
               <p class="m_info ">浏览次数（pv）</p>
@@ -14,7 +14,7 @@
           </div>
         </el-col> 
         <!-- 线图 -->
-        <el-col class="margin_t" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
           <div class="s_plane ">
             <lineChart class="lineChart"></lineChart>
           </div>
@@ -35,13 +35,13 @@
         </el-col>
         <!-- 访问来源 -->
         <!-- 访问设备 -->
-        <el-col class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-col v-if="route == 'webSurvey'" class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <div class="s_plane ">
             <toolTitle title="访问来源" content=""></toolTitle>
             <pieChart class="pieChart"></pieChart>
           </div>
         </el-col>
-        <el-col class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-col v-if="route == 'webSurvey'" class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <div class="s_plane ">
             <toolTitle title="访问设备" content=""></toolTitle>
             <pieChart class="pieChart"></pieChart>
@@ -71,20 +71,20 @@
         </el-col>
         <!-- 爬虫统计 -->
         <!-- 来源链接TOP10 -->
-        <el-col class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-col v-if="route == 'webSurvey'" class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <div class="s_plane ">
             <toolTitle title="爬虫统计" content=""></toolTitle>
             <pieChart class="pieChart"></pieChart>
           </div>
         </el-col>
-        <el-col class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-col v-if="route == 'webSurvey'" class="margin_t" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <div class="s_plane ">
             <toolTitle title="来源链接TOP10" content=""></toolTitle>
             <topTable class="topTable"></topTable>
           </div>
         </el-col>
       </el-row>
-      <div class="Copyright">
+      <div v-if="route == 'webSurvey'" class="Copyright">
         <p >Copyright © www.ev123.net, All Rights Reserved.</p>
         <p>您的智能建站管家</p>
       </div>
@@ -98,6 +98,7 @@ import toolTitle from './components/toolTitle'
 import lineChart from '@/components/charts/lineChart'
 import pieChart from '@/components/charts/pieChart'
 import mapChart from '@/components/charts/mapChart'
+import { getStatisticsInfo } from '@/api/statistics'
 export default {
   name: 'webSurvey',
   components: {
@@ -110,16 +111,39 @@ export default {
   },
   data() {
     return {
-     
+      route:"webSurvey",
+      // 表单信息
+      dataQuery:{
+
+      },
     }
   },
   mounted() {
+    if(this.$route.name == "webSurvey"){
+      this.route = 'webSurvey'
+    }else{
+      this.route = 'detail'
+    }
+    // this.getList();
+  },
+  created(){
+
   },
   methods: {
     // 监听顶部data改变
     watch_dataChange(data){
 
-    }
+    },
+    getList(){
+      console.log(this.dataQuery.name)
+      let params = this.formatData(this.dataQuery)
+      console.log()
+      getStatisticsInfo(params).then(res=>{
+        console.log(res)
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
   }
 };
 

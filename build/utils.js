@@ -47,7 +47,8 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'vue-style-loader'
+        fallback: 'vue-style-loader',
+        publicPath: '../../'
       })
     } else {
       return ['vue-style-loader'].concat(loaders)
@@ -90,12 +91,11 @@ exports.createNotifierCallback = () => {
 
     const error = errors[0]
     const filename = error.file && error.file.split('!').pop()
-
     notifier.notify({
       title: packageConfig.name,
       message: severity + ': ' + error.name,
       subtitle: filename || '',
-      icon: path.join(__dirname, 'logo.png')
+      // icon: path.join(__dirname('build'), '/static/logo.png')
     })
   }
 }

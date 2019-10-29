@@ -33,7 +33,7 @@
           <el-table-column prop="address" align="center" label="操作">
             <template slot-scope="scope">
               <span class="hover">
-                <img src="@/assets/images/menue/statics.png">
+                <img @click="toDetail" src="@/assets/images/menue/statics.png">
                 <!-- <img src="@/assets/images/menue/statics-act.png" > -->
               </span>
               <span class="hover">
@@ -52,32 +52,31 @@
         </div>
       </div>
     </div>
-    <el-dialog title="新增渠道" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
+    <el-dialog title="新增渠道" :visible.sync="dialogVisible" width="600px" >
       <div>
         <div class="flex_rowBetwen">
           <span  class="margin_t" style="width:90px;">渠道名称 </span>
-          <el-input placeholder="请输入搜索内容">
+          <el-input placeholder="请填写渠道名称">
           </el-input>
         </div>
         <div class="flex_rowBetwen margin_t">
-          <el-radio-group v-model="radio">
-            <el-radio class="margin_t" :label="3">页面</el-radio>
-            <el-radio class="margin_t" :label="6">产品</el-radio>
-            <el-radio class="margin_t" :label="9">文章</el-radio>
+          <el-radio-group v-model="dialogForm.type">
+            <el-radio class="margin_t" :label="1">页面</el-radio>
+            <el-radio class="margin_t" :label="2">产品</el-radio>
+            <el-radio class="margin_t" :label="3">文章</el-radio>
           </el-radio-group>
-          <el-input style="width:250px" placeholder="请输入搜索内容" v-model="input4">
-            <i slot="suffix" class="el-input__icon el-icon-search"></i>
+          <el-input style="width:250px" @keyup.enter="search" placeholder="请填写搜索关键字" v-model="dialogForm.keycode">
+            <i slot="suffix" @click="search" class="el-input__icon el-icon-search"></i>
           </el-input>
         </div>
-        <el-radio-group class="margin_t" v-model="listQuery.resource" style="width: 100%" size="medium">
+        <el-radio-group class="margin_t" v-model="dialogForm.title" style="width: 100%" size="medium">
           <el-table :data="tableData" border style="width: 70%">
-            <el-table-column prop="date" align="center" width="50">
+            <el-table-column prop="date" align="center" width="80">
               <template slot-scope='scope'>
-                <el-radio ></el-radio>
+                <el-radio :label="scope.row.radio" >{{demo}}</el-radio>
               </template>
             </el-table-column>
-            <el-table-column prop="address" label="页面标题">
-            </el-table-column>
+            <el-table-column prop="address" label="页面标题"></el-table-column>
           </el-table>
         </el-radio-group>
       </div>
@@ -86,12 +85,12 @@
         <el-button type="primary" @click="dialogVisible2 = true">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="渠道详情" :visible.sync="dialogVisible2" width="600px" :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="150px">
+    <el-dialog title="渠道详情" :visible.sync="dialogVisible2" width="600px" >
+      <el-form label-width="150px">
         <el-form-item label="渠道名称：">
           产品标题-今日头条投放广告
         </el-form-item>
-        <el-form-item label="渠道二维码：">
+        <el-form-item label="渠道二维码："> 
           <div class="imgInfo">
             <img src="" class="info" >
           </div>
@@ -120,21 +119,27 @@ export default {
   },
   data() {
     return {
+      demo:"",
       dialogVisible: false,
       dialogVisible2:false,
       total: 100,
       listQuery: {
-
+       
       },
-      radio: '',
+      dialogForm:{
+        title:1,
+        type:1,
+      },
       tableData: [
         {
           name: "2016-10-01",
           address: "测试数据",
+          radio:1,
         },
         {
           name: "2016-10-01",
           address: "测试数据",
+          radio:2,
         }
       ],
     }
@@ -144,6 +149,20 @@ export default {
     // 监听顶部data改变
     watch_dataChange(data) {
 
+    },
+    toDetail(){
+      this.$router.push({
+        path:"detail"
+      })
+    },
+    //获取列表数据
+    getList(){
+      let params = this.formatData(this.listQuery)
+      // dosome
+      
+    },
+    search(){
+      console.log('search')  
     }
   }
 };
